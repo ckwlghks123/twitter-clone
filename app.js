@@ -3,11 +3,11 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
-import tweetRouter from "./router/tweet.js";
+import tweetRouter from "./router/tweetRouter.js";
 
 const app = express();
 const corsOptions = {
-  origin: ["http://127.0.0.1:3000"],
+  origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
   optionsSuccessStatus: 200,
   credentials: true,
 };

@@ -4,7 +4,7 @@ const tweets = [
     text: "첫 트윗",
     createdAt: Date.now().toString(),
     name: "사용자 이름",
-    username: "아이디",
+    username: "hi",
     url: "사용자 이미지 url",
   },
 ];

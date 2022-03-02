@@ -1,32 +1,34 @@
 import * as tweetData from "../data/tweet.js";
 
-export function get(req, res) {
+export async function get(req, res) {
   const { username } = req.query;
-  const data = username ? tweetData.getByUser(username) : tweetData.get();
+  const data = await (username
+    ? tweetData.getByUser(username)
+    : tweetData.get());
 
   res.status(200).json(data);
 }
 
-export function getById(req, res) {
+export async function getById(req, res) {
   const id = Number(req.params.id);
-  const data = tweetData.getById(id);
+  const data = await tweetData.getById(id);
 
   data
     ? res.status(200).json(data)
     : res.status(404).json({ text: `id ${id}의 트윗이 없음` });
 }
 
-export function create(req, res) {
+export async function create(req, res) {
   const { text, username, name } = req.body;
-  const tweet = tweetData.create(text, username, name);
+  const tweet = await tweetData.create(text, username, name);
 
   res.status(201).json(tweet);
 }
 
-export function update(req, res) {
+export async function update(req, res) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = tweetData.update(id, text);
+  const tweet = await tweetData.update(id, text);
 
   if (tweet) {
     res.status(200).json(tweet);
@@ -35,9 +37,9 @@ export function update(req, res) {
   }
 }
 
-export function remove(req, res) {
+export async function remove(req, res) {
   const id = req.params.id;
-  tweetData.remove(id);
+  await tweetData.remove(id);
 
   res.sendStatus(204);
 }

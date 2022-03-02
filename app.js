@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
 import tweetRouter from "./router/tweetRouter.js";
+import memberRouter from "./router/memberRouter.js";
 
 const app = express();
 const corsOptions = {
@@ -19,6 +20,7 @@ app.use(helmet());
 app.use(cors(corsOptions));
 
 app.use("/tweets", tweetRouter);
+app.use("/user", memberRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);

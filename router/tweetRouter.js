@@ -1,6 +1,7 @@
 import express from "express";
 import "express-async-errors";
 import * as tweetController from "../controller/tweet.js";
+import { validate } from "../middleware/validate.js";
 
 const router = express.Router();
 
@@ -12,7 +13,7 @@ router.get("/", tweetController.get);
 router.get("/:id", tweetController.getById);
 
 // POST /tweets
-router.post("/", tweetController.create);
+router.post("/", validate, tweetController.create);
 
 // PUT /tweets/:id
 router.put("/:id", tweetController.update);

@@ -1,0 +1,35 @@
+import jwt from "jsonwebtoken";
+import * as memberData from "../data/member.js";
+
+const jwtkey = "PJKdS&9eNi6sqweu2HcQXuRjIYXNG@!s"; // lastpass 홈페이지
+const jwtEXP = "1d";
+
+export async function signUp(req, res) {
+  const { username } = req.body;
+  const existed = await memberData.findUser(username);
+  if (existed) {
+    return res.status(409).json({ message: `${username}가 이미 존재합니다` });
+  }
+  const userId = await memberData.signUp(req.body);
+  const token = genToken(userId);
+  res.status(201).json({ token, username });
+}
+
+export async function logIn(req, res) {
+  const { username, password } = req.body;
+  const userExists = await memberData.findUser(username);
+  if (!userExists) {
+    return res.status(401).json({ message: "invalid user or password" });
+  }
+  const passwordConfirmed = await memberData.confirmPW(password, userExists);
+  if (!passwordConfirmed) {
+    return res.status(401).json({ message: "invalid user or password" });
+  }
+
+  const token = genToken(userExists.id);
+  res.status(200).json({ token, username });
+}
+
+function genToken(id) {
+  return jwt.sign({ id }, jwtkey, { expiresIn: jwtEXP });
+}

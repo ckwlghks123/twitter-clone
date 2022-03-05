@@ -30,6 +30,10 @@ export async function findUser(username) {
   return members.find((member) => member.username === username);
 }
 
+export async function findById(id) {
+  return members.find((member) => member.id === id);
+}
+
 export async function confirmPW(password, loginUser) {
   return bcrypt.compare(password, loginUser.password);
 }

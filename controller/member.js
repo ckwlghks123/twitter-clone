@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import * as memberData from "../data/member.js";
 
 const jwtkey = "PJKdS&9eNi6sqweu2HcQXuRjIYXNG@!s"; // lastpass 홈페이지
-const jwtEXP = "1d";
+const jwtEXP = 20;
 
 export async function signUp(req, res) {
   const { username } = req.body;
@@ -18,6 +18,7 @@ export async function signUp(req, res) {
 export async function logIn(req, res) {
   const { username, password } = req.body;
   const userExists = await memberData.findUser(username);
+  console.log(userExists);
   if (!userExists) {
     return res.status(401).json({ message: "invalid user or password" });
   }
@@ -28,6 +29,14 @@ export async function logIn(req, res) {
 
   const token = genToken(userExists.id);
   res.status(200).json({ token, username });
+}
+
+export async function me(req, res) {
+  const user = await memberData.findById(req.userId);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  res.status(200).json({ token: req.token, username: user.username });
 }
 
 function genToken(id) {

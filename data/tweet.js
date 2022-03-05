@@ -1,44 +1,57 @@
-const tweets = [
+import * as memberData from "./member.js";
+
+let tweets = [
   {
     id: 1,
     text: "첫 트윗",
     createdAt: Date.now().toString(),
-    name: "사용자 이름",
-    username: "hi",
-    url: "사용자 이미지 url",
+    userId: 1,
   },
 ];
 
-export function get() {
-  return tweets;
+export async function get() {
+  return Promise.all(
+    tweets.map(async (tweet) => {
+      console.log(tweet);
+      const { username, name, url } = await memberData.findById(tweet.userId);
+
+      return { ...tweet, username, name, url };
+    })
+  );
 }
 
-export function getByUser(username) {
-  return tweets.filter((tweet) => tweet.username === username);
+export async function getByUser(username) {
+  return get().then((tweets) =>
+    tweets.filter((tweet) => tweet.username === username)
+  );
 }
 
-export function getById(id) {
-  return tweets.find((tweet) => tweet.id === id);
+export async function getById(id) {
+  const found = tweets.find((tweet) => tweet.id === id);
+  if (!found) {
+    return null;
+  }
+  const { username, name, url } = await memberData.findById(found.userId);
+  return { ...found, username, name, url };
 }
 
-export function create(text, username, name) {
+export async function create(text, userId) {
   const tweet = {
     id: Date.now().toString(),
     text,
     createdAt: new Date(),
-    name,
-    username,
+    userId,
   };
   tweets.unshift(tweet);
-  return tweet;
+  return getById(tweet.id);
 }
 
-export function update(id, text) {
+export async function update(id, text) {
   const tweet = tweets.find((tweet) => tweet.id === id);
   tweet && (tweet.text = text);
   return tweet;
 }
 
-export function remove(id) {
+export async function remove(id) {
   tweets = tweets.filter((tweet) => tweet.id !== id);
 }

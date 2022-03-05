@@ -19,8 +19,8 @@ export async function getById(req, res) {
 }
 
 export async function create(req, res) {
-  const { text, username, name } = req.body;
-  const tweet = await tweetData.create(text, username, name);
+  const { text } = req.body;
+  const tweet = await tweetData.create(text, req.userId);
 
   res.status(201).json(tweet);
 }
@@ -28,18 +28,31 @@ export async function create(req, res) {
 export async function update(req, res) {
   const id = req.params.id;
   const text = req.body.text;
-  const tweet = await tweetData.update(id, text);
+  const tweet = tweetData.getById(id);
 
-  if (tweet) {
-    res.status(200).json(tweet);
-  } else {
+  if (!tweet) {
     res.status(404).json({ text: `해당 ${id}의 트윗이 없습니다.` });
   }
+  if (tweet.userId !== req.userId) {
+    res.status(403).json({ text: `Unauthorized user` });
+  }
+
+  const updatedTweet = tweetData.update(id, text);
+
+  res.status(200).json(updatedTweet);
 }
 
 export async function remove(req, res) {
   const id = req.params.id;
-  await tweetData.remove(id);
+  const tweet = tweetData.getById(id);
 
+  if (!tweet) {
+    res.status(404).json({ text: `해당 ${id}의 트윗이 없습니다.` });
+  }
+  if (tweet.userId !== req.userId) {
+    res.status(403).json({ text: `Unauthorized user` });
+  }
+
+  await tweetData.remove(id);
   res.sendStatus(204);
 }

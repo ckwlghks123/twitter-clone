@@ -5,6 +5,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import tweetRouter from "./router/tweetRouter.js";
 import memberRouter from "./router/memberRouter.js";
+import { config } from "./config.js";
 
 const app = express();
 const corsOptions = {
@@ -31,4 +32,4 @@ app.use((error, req, res, next) => {
   res.status(500).send("Sorry");
 });
 
-app.listen(4000);
+app.listen(config.host.port);

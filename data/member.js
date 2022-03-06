@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
+import { config } from "../config.js";
 
-const bcryptSalt = 12;
+const bcryptSalt = Number(config.bcrypt.salt);
+
+console.log(bcryptSalt);
 
 const members = [
   {

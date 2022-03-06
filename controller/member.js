@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
+import { config } from "../config.js";
 import * as memberData from "../data/member.js";
 
-const jwtkey = "PJKdS&9eNi6sqweu2HcQXuRjIYXNG@!s"; // lastpass 홈페이지
-const jwtEXP = 20;
+const jwtEXP = config.jwt.expiresSec;
+const jwtkey = config.jwt.secretKey;
 
 export async function signUp(req, res) {
   const { username } = req.body;
@@ -18,7 +19,7 @@ export async function signUp(req, res) {
 export async function logIn(req, res) {
   const { username, password } = req.body;
   const userExists = await memberData.findUser(username);
-  console.log(userExists);
+
   if (!userExists) {
     return res.status(401).json({ message: "invalid user or password" });
   }

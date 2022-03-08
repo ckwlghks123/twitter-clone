@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { config } from "../config.js";
 
-const bcryptSalt = Number(config.bcrypt.salt);
+const bcryptSalt = config.bcrypt.salt;
 
 console.log(bcryptSalt);
 

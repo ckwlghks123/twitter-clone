@@ -6,6 +6,8 @@ import helmet from "helmet";
 import tweetRouter from "./router/tweetRouter.js";
 import memberRouter from "./router/memberRouter.js";
 import { config } from "./config.js";
+import { Server } from "socket.io";
+import { initSocket } from "./connection/socket.js";
 
 const app = express();
 const corsOptions = {
@@ -28,8 +30,8 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-  console.error(error);
   res.status(500).send("Sorry");
 });
 
-app.listen(config.host.port);
+const server = app.listen(config.host.port);
+initSocket(server);

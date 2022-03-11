@@ -1,40 +1,36 @@
 import bcrypt from "bcrypt";
 import { config } from "../config.js";
+import { db } from "../db/database.js";
 
 const bcryptSalt = config.bcrypt.salt;
 
-console.log(bcryptSalt);
-
-const members = [
-  {
-    id: 1,
-    username: "test",
-    password: "$2b$10$IdlPzMPAsMB8iAzQfAHXXeBrLyCoXlWUUGgLIGgbI2aFllhi1t3u.",
-    name: "지환",
-    email: "ckwlghks12@naver.com",
-    url: "dasd",
-  },
-];
-
 export async function signUp({ username, password, name, email, url }) {
-  const newMem = {
-    id: Date.now().toString(),
-    username,
-    password: await bcrypt.hash(password, bcryptSalt),
-    name,
-    email,
-    url,
-  };
-  members.push(newMem);
-  return newMem.id;
+  const optionUrl = url || null;
+  const encPW = await bcrypt.hash(password, bcryptSalt);
+  return db
+    .execute(
+      "INSERT INTO users (username, password, name, email, url) VALUES (?,?,?,?,?)",
+      [username, encPW, name, email, optionUrl]
+    )
+    .then((result) => result[0].insertId);
 }
 
 export async function findUser(username) {
-  return members.find((member) => member.username === username);
+  return db
+    .execute(
+      "SELECT id, username, password, name, email, url FROM users WHERE username=?",
+      [username]
+    )
+    .then((result) => result[0][0]);
 }
 
 export async function findById(id) {
-  return members.find((member) => member.id === id);
+  return db
+    .execute(
+      "SELECT id, username, password, name, email, url FROM users WHERE id=?",
+      [id]
+    )
+    .then((result) => result[0][0]);
 }
 
 export async function confirmPW(password, loginUser) {

@@ -8,6 +8,7 @@ import memberRouter from "./router/memberRouter.js";
 import { config } from "./config.js";
 import { Server } from "socket.io";
 import { initSocket } from "./connection/socket.js";
+import { db } from "./db/database.js";
 
 const app = express();
 const corsOptions = {

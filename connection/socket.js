@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Server } from "socket.io";
-import { config } from "../config";
+import { config } from "../config.js";
 
 class Socket {
   constructor(server) {

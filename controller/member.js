@@ -12,7 +12,9 @@ export async function signUp(req, res) {
     return res.status(409).json({ message: `${username}가 이미 존재합니다` });
   }
   const userId = await memberData.signUp(req.body);
+
   const token = genToken(userId);
+  console.log(token);
   res.status(201).json({ token, username });
 }
 
